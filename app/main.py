@@ -4,8 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-GIT_CMD = shutil.which("git") or "/usr/bin/git"
-
 from config import Config
 from embedder import Embedder
 from index_store import IndexStore
@@ -17,6 +15,8 @@ try:
     from reranker import Reranker as _Reranker
 except ImportError:
     _Reranker = None
+
+GIT_CMD = shutil.which("git") or "/usr/bin/git"
 
 _COPY_IGNORE = shutil.ignore_patterns(
     "node_modules", ".venv", "venv", "__pycache__", ".git",

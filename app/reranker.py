@@ -4,12 +4,12 @@ The reranker scores (query, candidate) pairs directly with a BGE cross-encoder
 model, producing more accurate relevance scores than cosine similarity on
 frozen embeddings.
 """
-import math
 import urllib.parse
 import urllib.request
+from pathlib import Path
+
 import numpy as np
 import onnxruntime as ort
-from pathlib import Path
 from tokenizers import Tokenizer
 
 
@@ -19,7 +19,7 @@ MAX_SEQ_LEN = 512  # BGE-reranker-base supports up to 512 tokens
 
 
 def _download(url: str, dest: Path):
-    if not urllib.parse.urlparse(url).scheme in ("http", "https"):
+    if urllib.parse.urlparse(url).scheme not in ("http", "https"):
         raise ValueError(f"Blocked non-HTTP(S) URL: {url}")
     dest.parent.mkdir(parents=True, exist_ok=True)
     urllib.request.urlretrieve(url, str(dest))

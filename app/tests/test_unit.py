@@ -294,7 +294,8 @@ class TestConfig:
         assert isinstance(cfg.PACKAGES_TO_SCAN, list)
         assert isinstance(cfg.CONFIDENCE_THRESHOLD, float)
 
-    def test_web_urls_empty_by_default(self):
+    def test_web_urls_empty_by_default(self, monkeypatch):
+        monkeypatch.setattr(Config, "WEB_URLS_RAW", "[]")
         cfg = Config()
         assert cfg.WEB_URLS == []
 
@@ -458,6 +459,7 @@ class TestSearcherWithReranker:
             def rerank(self, query: str, candidates: list[dict]) -> list[dict]:
                 # Mimics real reranker.py:71 — accesses c["text"]
                 texts = [c["text"] for c in candidates]
+                assert texts is not None
                 # Reverse order to prove reranker was called
                 for c in candidates:
                     c["score"] = 0.5  # uniform score
@@ -547,6 +549,7 @@ class TestSearcherWithReranker:
         emb = np.array([[1.0, 0.0, 0.0, 0.0]], dtype=np.float32)
         s = Searcher(meta, emb, reranker=CountReranker(), reranker_candidates=10)
         results = s.search(emb[[0]], threshold=2.0, query_text="test")
+        assert results == []
         assert call_count == 0
 
     def test_backwards_compatible_no_reranker(self):
@@ -569,7 +572,7 @@ class TestSearcherWithReranker:
         class TextAccessReranker:
             """Mimics the real reranker's c['text'] access pattern."""
             def rerank(self, query, candidates):
-                texts = [c["text"] for c in candidates]  # noqa: real reranker does this
+                texts = [c["text"] for c in candidates]  # noqa: F841
                 return candidates
 
         meta = [

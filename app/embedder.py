@@ -19,7 +19,7 @@ def _download(url: str, dest: Path):
         url: Source URL to download from.
         dest: Destination path on disk.
     """
-    if not urllib.parse.urlparse(url).scheme in ("http", "https"):
+    if urllib.parse.urlparse(url).scheme not in ("http", "https"):
         raise ValueError(f"Blocked non-HTTP(S) URL: {url}")
     dest.parent.mkdir(parents=True, exist_ok=True)
     urllib.request.urlretrieve(url, str(dest))

@@ -23,7 +23,7 @@ def fetch_url_text(url: str, timeout: int = 30) -> str | None:
         for tag in soup(["script", "style", "nav", "footer", "header", "aside"]):
             tag.decompose()
         text = soup.get_text(separator="\n", strip=True)
-        lines = [l for l in text.split("\n") if len(l.strip()) > 30]
+        lines = [line for line in text.split("\n") if len(line.strip()) > 30]
         return "\n".join(lines)
     except Exception as e:
         print(f"  Failed to fetch {url}: {e}")

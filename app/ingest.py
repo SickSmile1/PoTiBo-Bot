@@ -1,5 +1,4 @@
 import time
-from pathlib import Path
 
 from embedder import Embedder
 from index_store import IndexStore
